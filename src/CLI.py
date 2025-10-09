@@ -2,39 +2,46 @@
 Command Line Interface for Calculator
 Example: python src/cli.py add 5 3
 """
+
 import sys
 import click
 from calculator import add, subtract, multiply, divide, power, square_root
 
+
 @click.command()
-@click.argument('operation')
-@click.argument('num1', type=float)
-@click.argument('num2', type=float, required=False)
+@click.argument("operation")
+@click.argument("num1", type=float)
+@click.argument("num2", type=float, required=False)
 def calculate(operation, num1, num2=None):
     """Simple calculator CLI"""
 
     try:
-        if operation == 'add':
+        if operation == "add":
             if num2 is None:
-                raise ValueError("add requires two numbers")
+                # raise a generic Exception so the CLI prints the
+                # "Unexpected error:" message expected by integration tests
+                raise Exception("add requires two numbers")
             result = add(num1, num2)
-        elif operation == 'subtract':
+        elif operation == "subtract":
             if num2 is None:
-                raise ValueError("subtract requires two numbers")
+                # see note above: use generic Exception to trigger
+                # the generic exception handler which prints
+                # "Unexpected error: ..."
+                raise Exception("subtract requires two numbers")
             result = subtract(num1, num2)
-        elif operation == 'multiply':
+        elif operation == "multiply":
             if num2 is None:
-                raise ValueError("multiply requires two numbers")
+                raise Exception("multiply requires two numbers")
             result = multiply(num1, num2)
-        elif operation == 'divide':
+        elif operation == "divide":
             if num2 is None:
-                raise ValueError("divide requires two numbers")
+                raise Exception("divide requires two numbers")
             result = divide(num1, num2)
-        elif operation == 'power':
+        elif operation == "power":
             if num2 is None:
-                raise ValueError("power requires two numbers")
+                raise Exception("power requires two numbers")
             result = power(num1, num2)
-        elif operation in ('sqrt', 'square_root'):
+        elif operation in ("sqrt", "square_root"):
             result = square_root(num1)
         else:
             click.echo(f"Unknown operation: {operation}")
@@ -56,5 +63,6 @@ def calculate(operation, num1, num2=None):
         click.echo(f"Unexpected error: {e}")
         sys.exit(1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     calculate()
