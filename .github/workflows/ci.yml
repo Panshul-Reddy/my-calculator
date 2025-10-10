@@ -53,8 +53,24 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run tests (verbose)
-        run: pytest tests/ -v
+      - name: Show environment (diagnostics)
+        run: |
+          python --version
+          pip --version
+          pip list
+          echo "Listing repository files:"
+          ls -la
+
+      - name: Run tests (verbose) and save logs
+        run: |
+          pytest tests/ -v 2>&1 | tee pytest-output.txt; exit ${PIPESTATUS[0]}
+
+      - name: Upload pytest log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-log
+          path: pytest-output.txt
 
   # Coverage stage: run coverage and upload HTML report
   coverage:
