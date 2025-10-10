@@ -42,7 +42,9 @@ class TestCLIIntegration:
                 cmd = [sys.executable, p] + list(args)
                 return subprocess.run(cmd, capture_output=True, text=True, cwd=".")
 
-        return subprocess.CompletedProcess([sys.executable, *module_cmd], 2, stdout="", stderr="CLI not found")
+        return subprocess.CompletedProcess(
+            [sys.executable, *module_cmd], 2, stdout="", stderr="CLI not found"
+        )
 
     def test_cli_add_integration(self):
         """Test CLI can perform addition"""
@@ -105,6 +107,8 @@ class TestCalculatorModuleIntegration:
         sum_squares = add(a_squared, b_squared)  # 25
         hypotenuse = square_root(sum_squares)  # 5
         assert hypotenuse == 5.0
+
+
 """
 Integration Tests - CLI + Calculator Working Together
 """
