@@ -17,7 +17,21 @@ if ROOT not in sys.path:
 
 from importlib.machinery import SourceFileLoader
 
-CLI_PATH = os.path.join(ROOT, "src", "cli.py")
+# Some environments (Windows) are case-insensitive while CI runners (Linux)
+# are case-sensitive. Try both common filename variants so the test works
+# in either environment.
+possible = [
+    os.path.join(ROOT, "src", "cli.py"),
+    os.path.join(ROOT, "src", "CLI.py"),
+]
+CLI_PATH = None
+for p in possible:
+    if os.path.exists(p):
+        CLI_PATH = p
+        break
+if CLI_PATH is None:
+    raise FileNotFoundError(f"Could not find cli module at any of: {possible}")
+
 calculate = SourceFileLoader("cli", CLI_PATH).load_module().calculate
 
 
