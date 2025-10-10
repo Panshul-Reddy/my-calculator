@@ -94,6 +94,39 @@ def calculate(operation, num1, num2=None):
         sys.exit(1)
 
 
+def calculate_simple(operation, num1, num2=None):
+    """Alternate simple calculate implementation (as requested).
+
+    This implements the straightforward branching the user provided.
+    It is kept separate from the main Click-backed `calculate` so
+    tests and behavior remain unchanged.
+    """
+    try:
+        if operation == "add":
+            result = add(num1, num2)
+        elif operation == "subtract":
+            result = subtract(num1, num2)
+        elif operation == "multiply":
+            result = multiply(num1, num2)
+        elif operation == "divide":
+            result = divide(num1, num2)
+        elif operation == "power":
+            result = power(num1, num2)
+        elif operation == "square_root" or operation == "sqrt":
+            result = square_root(num1)
+        else:
+            click.echo(f"Unknown operation: {operation}")
+            sys.exit(1)
+
+        # Print result directly (no special formatting here)
+        click.echo(str(result))
+
+    except Exception as exc:
+        # Mirror the simple behavior: print unexpected error and exit
+        click.echo(f"Unexpected error: {exc}")
+        sys.exit(1)
+
+
 if __name__ == "__main__":
     # Click-decorated functions appear to take parameters to static
     # analysis tools like pylint, which causes false positives.
