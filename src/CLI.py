@@ -8,6 +8,11 @@ import click
 from calculator import add, subtract, multiply, divide, power, square_root
 
 
+class UserInputError(Exception):
+    """Raised when the user provides invalid input to the CLI."""
+    pass
+
+
 @click.command()
 @click.argument("operation")
 @click.argument("num1", type=float)
@@ -18,34 +23,28 @@ def calculate(operation, num1, num2=None):
     try:
         if operation == "add":
             if num2 is None:
-                # raise a generic Exception so the CLI prints the
-                # "Unexpected error:" message expected by integration tests
-                raise Exception("add requires two numbers")
+                raise UserInputError("add requires two numbers")
             result = add(num1, num2)
         elif operation == "subtract":
             if num2 is None:
-                # see note above: use generic Exception to trigger
-                # the generic exception handler which prints
-                # "Unexpected error: ..."
-                raise Exception("subtract requires two numbers")
+                raise UserInputError("subtract requires two numbers")
             result = subtract(num1, num2)
         elif operation == "multiply":
             if num2 is None:
-                raise Exception("multiply requires two numbers")
+                raise UserInputError("multiply requires two numbers")
             result = multiply(num1, num2)
         elif operation == "divide":
             if num2 is None:
-                raise Exception("divide requires two numbers")
+                raise UserInputError("divide requires two numbers")
             result = divide(num1, num2)
         elif operation == "power":
             if num2 is None:
-                raise Exception("power requires two numbers")
+                raise UserInputError("power requires two numbers")
             result = power(num1, num2)
         elif operation in ("sqrt", "square_root"):
             result = square_root(num1)
         else:
-            click.echo(f"Unknown operation: {operation}")
-            sys.exit(1)
+            raise UserInputError(f"Unknown operation: {operation}")
 
         # Format result nicely
         if isinstance(result, float) and result.is_integer():
@@ -56,10 +55,15 @@ def calculate(operation, num1, num2=None):
             else:
                 click.echo(str(result))
 
+    except UserInputError as e:
+        # Clear, expected user error
+        click.echo(f"Error: {e}")
+        sys.exit(1)
     except ValueError as e:
         click.echo(f"Error: {e}")
         sys.exit(1)
     except Exception as e:
+        # Unexpected exceptions
         click.echo(f"Unexpected error: {e}")
         sys.exit(1)
 
