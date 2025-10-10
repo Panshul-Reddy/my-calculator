@@ -18,17 +18,21 @@ class TestCLIIntegration:
         # Try running the CLI as a module first (python -m src.cli). This
         # avoids issues on case-sensitive filesystems where the filename
         # might be `CLI.py` vs `cli.py`.
-        module_cmd = [sys.executable, '-m', 'src.cli'] + list(args)
+        module_cmd = [sys.executable, "-m", "src.cli"] + list(args)
         try:
-            result = subprocess.run(module_cmd, capture_output=True, text=True, cwd='.')
+            result = subprocess.run(module_cmd, capture_output=True, text=True, cwd=".")
             # If the module invocation succeeded, return it.
             if result.returncode == 0:
                 return result
 
             # If the invocation failed because the module/file wasn't
             # found, fall through to the file-based invocation.
-            stderr = (result.stderr or '').lower()
-            if ('no module named src.cli' in stderr) or ("can't open file" in stderr) or ('no module named src' in stderr):
+            stderr = (result.stderr or "").lower()
+            if (
+                ("no module named src.cli" in stderr)
+                or ("can't open file" in stderr)
+                or ("no module named src" in stderr)
+            ):
                 # try file-based fallback
                 pass
             else:
@@ -41,15 +45,17 @@ class TestCLIIntegration:
 
         # Fallback: try explicit script file paths (case-insensitive
         # environments may use different casing).
-        possible = ['src/cli.py', 'src/CLI.py']
+        possible = ["src/cli.py", "src/CLI.py"]
         for p in possible:
             if os.path.exists(p):
                 cmd = [sys.executable, p] + list(args)
-                return subprocess.run(cmd, capture_output=True, text=True, cwd='.')
+                return subprocess.run(cmd, capture_output=True, text=True, cwd=".")
 
         # If neither approach worked, return a CompletedProcess-like
         # object indicating failure.
-        return subprocess.CompletedProcess([sys.executable, *module_cmd], 2, stdout='', stderr='CLI not found')
+        return subprocess.CompletedProcess(
+            [sys.executable, *module_cmd], 2, stdout="", stderr="CLI not found"
+        )
 
     def test_cli_add_integration(self):
         """Test CLI can perform addition"""
