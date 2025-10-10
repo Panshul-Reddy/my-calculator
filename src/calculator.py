@@ -14,16 +14,6 @@ def subtract(a, b):
     return a - b
 
 
-def multiply(a, b):
-    """Multiply two numbers"""
-    return a * b
-
-
-def divide(a, b):
-    """Divide a by b"""
-    return a / b
-
-
 def power(a, b):
     """Raise a to the power of b"""
     return a**b
@@ -37,10 +27,10 @@ def square_root(a):
 
 
 def multiply(a, b):
-    """Multiply two numbers with input validation and logging."""
+    """Multiply two numbers with input validation."""
     if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
         raise TypeError("Both arguments must be numbers")
-    # perform multiplication without printing to stdout
+
     return a * b
 
 
@@ -50,11 +40,9 @@ def divide(a, b):
         raise TypeError("Division requires numeric inputs")
     if b == 0:
         raise ValueError(f"Cannot divide {a} by zero - division by zero is undefined")
-    # perform division without printing to stdout
+
     return a / b
 
-
-# TODO: Students will add multiply, divide, power, sqrt functions
 
 if __name__ == "__main__":
     print("🧮 Calculator Module")

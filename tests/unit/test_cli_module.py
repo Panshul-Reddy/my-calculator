@@ -12,11 +12,13 @@ from click.testing import CliRunner
 # (i.e. `from calculator import ...`). This mirrors how the CLI is
 # executed via subprocess in integration tests.
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-SRC_DIR = os.path.join(ROOT, "src")
-if SRC_DIR not in sys.path:
-    sys.path.insert(0, SRC_DIR)
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
-from src.CLI import calculate
+from importlib.machinery import SourceFileLoader
+
+CLI_PATH = os.path.join(ROOT, "src", "cli.py")
+calculate = SourceFileLoader("cli", CLI_PATH).load_module().calculate
 
 
 def test_cli_add_in_process():
